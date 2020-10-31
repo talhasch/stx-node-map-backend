@@ -1,7 +1,15 @@
+import json
 import logging
+import os
+import time
+
 import requests
 
+from stx_node_map.util import file_write, assert_env_vars
+
 logging.basicConfig(level=logging.INFO)
+
+this_dir = os.path.abspath(os.path.dirname(__file__))
 
 
 def ip_to_location(ip: str):
@@ -54,7 +62,9 @@ def scan_list(list_):
 def worker():
     global found
 
-    scan_list(get_neighbors("krypton.blockstack.org"))
+    found = []
+
+    scan_list(get_neighbors(assert_env_vars("DISCOVERER_MAIN_NODE")))
     scan_list(found)
 
     logging.info("{} nodes found.".format(len(found)))
@@ -87,6 +97,12 @@ def worker():
 
         result.append(item)
 
-    import pprint
+    save_path = os.path.join(this_dir, "..", "..", "..", "data.json")
+    file_write(save_path, json.dumps(result))
+    logging.info("Saved")
 
-    pprint.pprint(result)
+
+def main():
+    while True:
+        worker()
+        time.sleep(60)

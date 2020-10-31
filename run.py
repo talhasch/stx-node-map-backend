@@ -27,8 +27,8 @@ def main():
         main()
 
     if cmd == 'discoverer':
-        from stx_node_map.discoverer import worker
-        worker()
+        from stx_node_map.discoverer import main
+        main()
 
 
 if __name__ == '__main__':

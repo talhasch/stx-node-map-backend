@@ -1,4 +1,12 @@
+import json
+import os
+
 from flask import Flask, jsonify
+
+from stx_node_map.util import file_read, assert_env_vars
+
+this_dir = os.path.abspath(os.path.dirname(__file__))
+file_path = os.path.join(this_dir, "..", "..", "..", "data.json")
 
 
 def __flask_setup():
@@ -6,9 +14,19 @@ def __flask_setup():
 
     app = Flask(__name__)
 
-    @app.route("/nodes")
-    def nodes():
-        return jsonify([])
+    @app.route("/")
+    def index():
+        try:
+            data = json.loads(file_read(file_path))
+        except FileNotFoundError:
+            data = []
+
+        resp = {
+            "network": assert_env_vars("NETWORK"),
+            "nodes": data
+        }
+
+        return jsonify(resp)
 
 
 def __run_dev_server():
