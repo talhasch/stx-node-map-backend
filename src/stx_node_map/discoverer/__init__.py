@@ -105,4 +105,4 @@ def worker():
 def main():
     while True:
         worker()
-        time.sleep(60)
+        time.sleep(120)
