@@ -2,6 +2,7 @@ import json
 import os
 
 from flask import Flask, jsonify
+from flask_cors import CORS
 
 from stx_node_map.util import file_read, assert_env_vars
 
@@ -13,6 +14,7 @@ def __flask_setup():
     global app
 
     app = Flask(__name__)
+    CORS(app)
 
     @app.route("/")
     def index():
