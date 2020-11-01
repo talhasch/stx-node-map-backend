@@ -16,8 +16,8 @@ def __flask_setup():
     app = Flask(__name__)
     CORS(app)
 
-    @app.route("/")
-    def index():
+    @app.route("/nodes")
+    def nodes():
         try:
             data = json.loads(file_read(file_path))
         except FileNotFoundError:
