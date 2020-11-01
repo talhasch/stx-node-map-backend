@@ -47,25 +47,25 @@ def get_neighbors(host: str):
     return [a for a in unique if a != "0.0.0.0"]
 
 
-found = []
-
-
 def scan_list(list_):
-    global found
+    found = []
 
     for address in list_:
         logging.info("Scanning {}".format(address))
         neighbors = get_neighbors(address)
         found += [n for n in neighbors if n not in found]
 
+    return found
+
 
 def worker():
-    global found
+    # scan
+    found = scan_list(get_neighbors(assert_env_vars("DISCOVERER_MAIN_NODE")))
+    found += scan_list(found)
+    found += scan_list(found)
 
-    found = []
-
-    scan_list(get_neighbors(assert_env_vars("DISCOVERER_MAIN_NODE")))
-    scan_list(found)
+    # make list unique
+    found = list(set(found))
 
     logging.info("{} nodes found.".format(len(found)))
     logging.info("Detecting locations")
