@@ -1,0 +1,57 @@
+#! /bin/sh
+
+### BEGIN INIT INFO
+# Provides:          Discoverer
+# Required-Start:    $network
+# Required-Stop:     $network
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Discoverer
+# Description:       Discoverer
+### END INIT INFO
+
+NAME=discoverer
+DESC="discoverer"
+PIDFILE="/var/run/${NAME}.pid"
+LOGFILE="/var/log/${NAME}.log"
+BASE_DIR="/root/stx-node-map-backend"
+
+. "${BASE_DIR}/env.sh"
+
+DAEMON="${BASE_DIR}/venv/bin/python"
+DAEMON_OPTS="${BASE_DIR}/run.py discoverer"
+
+START_OPTS="--start --background --make-pidfile --pidfile ${PIDFILE} --chdir ${BASE_DIR} --exec ${DAEMON} ${DAEMON_OPTS}"
+STOP_OPTS="--stop --pidfile ${PIDFILE}"
+
+test -x $DAEMON || exit 0
+
+set -e
+
+case "$1" in
+    start)
+        echo -n "Starting ${DESC}: "
+        start-stop-daemon $START_OPTS >> $LOGFILE
+        echo "$NAME."
+        ;;
+    stop)
+        echo -n "Stopping $DESC: "
+        start-stop-daemon $STOP_OPTS
+        echo "$NAME."
+        rm -f $PIDFILE
+        ;;
+    restart|force-reload)
+        echo -n "Restarting $DESC: "
+        start-stop-daemon $STOP_OPTS
+        sleep 1
+        start-stop-daemon $START_OPTS >> $LOGFILE
+        echo "$NAME."
+        ;;
+    *)
+        N=/etc/init.d/$NAME
+        echo "Usage: $N {start|stop|restart|force-reload}" >&2
+        exit 1
+        ;;
+esac
+
+exit 0
