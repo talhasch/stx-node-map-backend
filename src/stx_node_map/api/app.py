@@ -16,6 +16,10 @@ def __flask_setup():
     app = Flask(__name__)
     CORS(app)
 
+    @app.route("/")
+    def index():
+        return "Hello"
+
     @app.route("/nodes")
     def nodes():
         try:
