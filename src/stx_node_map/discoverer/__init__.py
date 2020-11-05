@@ -33,7 +33,7 @@ def get_neighbors(host: str):
     url = make_core_api_url(host)
 
     try:
-        json = requests.get(url, timeout=5).json()
+        json = requests.get(url, timeout=4).json()
     except BaseException:
         return []
 
@@ -61,8 +61,8 @@ def scan_list(list_):
 def worker():
     # scan
     found = scan_list(get_neighbors(assert_env_vars("DISCOVERER_MAIN_NODE")))
-    # found += scan_list(found)
-    # found += scan_list(found)
+    found += scan_list(found)
+    found += scan_list(found)
 
     # make list unique
     found = list(set(found))
