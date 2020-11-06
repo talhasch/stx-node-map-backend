@@ -59,8 +59,12 @@ def scan_list(list_):
 
 
 def worker():
-    # scan
-    found = scan_list(get_neighbors(assert_env_vars("DISCOVERER_MAIN_NODE")))
+    seed = get_neighbors(assert_env_vars("DISCOVERER_MAIN_NODE"))
+    if len(seed) == 0:
+        return
+
+        # scan
+    found = scan_list(seed)
     found += scan_list(found)
     found += scan_list(found)
 
