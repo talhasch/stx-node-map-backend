@@ -26,12 +26,14 @@ def ip_to_location(ip: str):
 
 
 def make_core_api_url(host: str):
+    if "stack" in host:
+        return "http://{}/v2/neighbors".format(host)
+
     return "http://{}:20443/v2/neighbors".format(host)
 
 
 def get_neighbors(host: str):
     url = make_core_api_url(host)
-
     try:
         json = requests.get(url, timeout=4).json()
     except BaseException:
@@ -60,6 +62,7 @@ def scan_list(list_):
 
 def worker():
     seed = get_neighbors(assert_env_vars("DISCOVERER_MAIN_NODE"))
+    print(seed)
     if len(seed) == 0:
         return
 
